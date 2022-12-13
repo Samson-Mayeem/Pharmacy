@@ -5,7 +5,7 @@ namespace samPharma.ViewModel
     public class LoginViewModel
     {
         [Display(Name ="Email Address")]
-        [Required(ErrorMessage ="Email adrress is requ")]
+        [Required(ErrorMessage ="Email address is request")]
         public string Email { get; set; }
         [Required]
         [DataType(DataType.Password)]
