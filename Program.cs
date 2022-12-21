@@ -2,6 +2,8 @@ using samPharma.Data;
 using Microsoft.EntityFrameworkCore;
 using System;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity;
+using samPharma.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,10 +14,13 @@ builder.Services.AddDbContext<samDbContext>
                 (options => options.UseMySql(builder.Configuration.GetConnectionString("con_sampharma"), new MySqlServerVersion(new Version())));
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
   .AddCookie();
+/*builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
+  .AddEntityFrameworkStores<samDbContext>();
+*/
 
-builder.Services.AddDbContext<AppDbContext>(options =>
-  options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection")));
-
+builder.Services.AddIdentity<User, IdentityRole>()
+     .AddEntityFrameworkStores<samDbContext>()
+     .AddDefaultTokenProviders();
 
 var app = builder.Build();
 

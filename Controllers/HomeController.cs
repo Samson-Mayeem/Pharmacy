@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SimpleLogin.Models;
+using samPharma.Models;
 using System.Diagnostics;
 
 namespace SimpleLogin.Controllers

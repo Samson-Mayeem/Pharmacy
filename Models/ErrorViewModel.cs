@@ -1,4 +1,4 @@
-namespace SimpleLogin.Models
+namespace samPharma.Models
 {
     public class ErrorViewModel
     {

@@ -1,52 +1,75 @@
-﻿using Microsoft.AspNetCore.Authentication.Cookies;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using samPharma.Data;
+using Microsoft.Extensions.Logging;
 using samPharma.Models;
-using samPharma.ViewModel;
-using System.Security.Claims;
-using static IdentityServer4.Models.IdentityResources;
 
 namespace samPharma.Controllers
 {
     public class UserController : Controller
     {
-        private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
-        private readonly samDbContext _context;
-        public UserController(UserManager<User> userManager, SignInManager<User> signInManager, samDbContext samDbContext)
+        private readonly UserManager<User> _userManager;
+        private readonly ILogger<User> _logger;
+
+        public UserController(ILogger<User> logger)
         {
-            _userManager = userManager;
+            _logger = logger;
+        }
+
+        public UserController(SignInManager<User> signInManager, UserManager<User> userManager)
+        {
             _signInManager = signInManager;
-            _context = samDbContext;
+            _userManager = userManager;
         }
-        public IActionResult LoginPage()
+        public IActionResult RedirectToLocal(string returnUrl)
         {
-            return View();
-        }
-        [HttpPost("login")]
-        public async Task<IActionResult> Login(LoginViewModel loginviewmodel)
-        {
-            var user = await _userManager.FindByEmailAsync(loginviewmodel.Email);
-
-            if (!ModelState.IsValid) 
-           {
-                var claims = new List<Claim>();
-
-                claims.Add(new Claim("Email", loginviewmodel.Email));
-                claims.Add(new Claim(ClaimTypes.Email, loginviewmodel.Email));
-                var claimsIdebtity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                //var claimsprincipal = new ClaimsPrincipal(claimsprincipal);
-                return View(loginviewmodel);
-           }
-
-            /*if(user != null)
+            if (Url.IsLocalUrl(returnUrl))
             {
-                var passwordCheck = await _userManager.CheckPasswordAsync(user, loginviewmodel.Password); 
-                return View(loginviewmodel);
-            }*/
-            return BadRequest();
-           
+                return Redirect(returnUrl);
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> User(User model,
+                                               string returnUrl = null)
+        {
+            ViewData["ReturnUrl"] = returnUrl;
+            if (ModelState.IsValid)
+            {
+                // This doesn't count login failures towards account lockout
+                // To enable password failures to trigger account lockout, set lockoutOnFailure: true
+                var result = await _signInManager.PasswordSignInAsync(model.Email,
+                                                                      model.Password,
+                                                                      model.RememberMe,
+                                                                      lockoutOnFailure: false);
+                if (result.Succeeded)
+                {
+                    _logger.LogInformation( $"User {User} logged in.");
+                    return RedirectToLocal(returnUrl);
+                }
+                if (result.IsLockedOut)
+                {
+                    _logger.LogWarning("User account locked out.");
+                    return RedirectToAction(nameof(LockoutOptions));
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    return View(model);
+                }
+            }
+
+            // If we got this far, something failed, redisplay form
+            return View(model);
+        }
+
+
     }
 }

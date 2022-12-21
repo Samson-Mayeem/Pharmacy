@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace samPharma.Models
 {
-    public class User
+    public class User : IdentityUser
     {
         [Key]
         public long Id {get; set;}
@@ -15,6 +16,7 @@ namespace samPharma.Models
         public String? Password {get; set;}
         public String? Role {get; set;}
         public String? StaffId {get; set;}
+        public bool RememberMe { get; set; }
 
     }
 }
