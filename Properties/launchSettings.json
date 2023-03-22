@@ -8,11 +8,11 @@
     }
   },
   "profiles": {
-    "SimpleLogin": {
+    "samPharmacy": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,
-      "applicationUrl": "https://localhost:7001;http://localhost:5001",
+      "applicationUrl": "https://localhost:7000;http://localhost:8001",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

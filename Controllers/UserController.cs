@@ -22,6 +22,14 @@ namespace samPharma.Controllers
             _signInManager = signInManager;
             _userManager = userManager;
         }
+        public IActionResult Index()
+        {
+            return View();
+        }
+        public IActionResult AddUser()
+        {
+            return View();
+        }
         public IActionResult RedirectToLocal(string returnUrl)
         {
             if (Url.IsLocalUrl(returnUrl))
@@ -33,6 +41,7 @@ namespace samPharma.Controllers
                 return RedirectToAction("Index", "Home");
             }
         }
+        
 
         [HttpPost]
         [AllowAnonymous]
@@ -46,7 +55,7 @@ namespace samPharma.Controllers
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
                 var result = await _signInManager.PasswordSignInAsync(model.Email,
-                                                                      model.Password,
+                                                                     model.Password,
                                                                       model.RememberMe,
                                                                       lockoutOnFailure: false);
                 if (result.Succeeded)

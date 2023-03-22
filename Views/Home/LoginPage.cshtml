@@ -1,6 +1,6 @@
 
 
-<EditForm>
+<form>
   <div class="form-group">
     <label for="exampleInputEmail1">Email address</label>
     <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
@@ -15,5 +15,6 @@
     <label class="form-check-label" for="exampleCheck1">Check me out</label>
   </div>
   <button type="submit" class="btn btn-primary">Submit</button> <span></span>
-    <p>If you have no account please <a href="../Pages/Register.razor">Register</a>to login</p>
-</EditForm>
+    @*@Html.ActionLink("Register", "", "Index")*@
+    <p>If you have no account please <a asp-area="" asp-controller="User" asp-action="AddUser"> Register </a>to login</p>
+</form>
